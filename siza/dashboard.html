@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Siza</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --tan:   rgb(175,153,134);
+      --brown: rgb(54,26,0);
+      --green: rgb(4,170,109);
+      --gold:  rgb(201,141,0);
+      --white: #fdfaf7;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 48px;
+      background: var(--brown);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.3rem; }
+    .top-bar nav a {
+      color: rgba(255,255,255,.75);
+      text-decoration: none;
+      font-size: .875rem;
+      margin-left: 20px;
+      transition: color .2s;
+    }
+    .top-bar nav a:hover { color: white; }
+    .top-bar nav a.active { color: white; font-weight: 600; }
+
+    .layout { display: flex; min-height: calc(100vh - 60px); }
+
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: white;
+      border-right: 1px solid #ece7e1;
+      padding: 28px 0;
+    }
+    .sidebar-avatar {
+      text-align: center;
+      padding: 0 20px 24px;
+      border-bottom: 1px solid #ece7e1;
+      margin-bottom: 16px;
+    }
+    .avatar-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--tan);
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+    }
+    .sidebar-avatar h3 { font-size: 1rem; margin-bottom: 2px; }
+    .sidebar-avatar small { font-size: .78rem; color: var(--tan); text-transform: capitalize; }
+
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 24px;
+      text-decoration: none;
+      font-size: .875rem;
+      color: #666;
+      transition: background .15s, color .15s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { background: #f5efe8; color: var(--brown); }
+    .sidebar-nav a.active { background: #f5efe8; color: var(--brown); border-left-color: var(--green); font-weight: 600; }
+    .sidebar-nav a .ico { width: 18px; text-align: center; }
+
+    .main { flex: 1; padding: 36px 48px; overflow-x: hidden; }
+
+    .page-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 24px; }
+
+    .tab-group { display: none; }
+    .tab-group.active { display: block; }
+
+    .section-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 14px rgba(0,0,0,.07);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .section-card h3 {
+      font-size: 1rem;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0ede9;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .fab-sell {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      padding: 13px 22px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(4,170,109,.4);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform .15s;
+      z-index: 200;
+    }
+    .fab-sell:hover { transform: translateY(-2px); }
+
+    .chat-box {
+      position: fixed;
+      bottom: 0;
+      right: 28px;
+      width: 300px;
+      background: white;
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -4px 28px rgba(0,0,0,.18);
+      display: none;
+      flex-direction: column;
+      z-index: 300;
+      overflow: hidden;
+    }
+    .chat-header { background: var(--brown); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: .9rem; }
+    .chat-header button { background: none; border: none; color: rgba(255,255,255,.7); cursor: pointer; font-size: 1rem; width: auto; padding: 0; }
+    .chat-messages { height: 200px; overflow-y: auto; padding: 12px; background: #fdfaf7; }
+    .chat-input-row { display: flex; border-top: 1px solid #eee; }
+    .chat-input-row input { flex: 1; border: none; padding: 10px 12px; font-family: inherit; font-size: .85rem; outline: none; }
+    .chat-input-row button { background: var(--green); color: white; border: none; padding: 10px 16px; cursor: pointer; font-family: inherit; font-weight: 600; width: auto; }
+
+    button { font-family: 'DM Sans', sans-serif; cursor: pointer; }
+
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .main { padding: 24px 20px; }
+      .top-bar { padding: 14px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top-bar">
+    <a class="logo" href="home.html">
+      <span style="font-size:1.4rem;"></span>
+      <span class="logo-text">Siza</span>
+    </a>
+    <nav>
+      <a href="home.html">Browse</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="#" onclick="handleLogout(event)">Log Out</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-avatar">
+        <div class="avatar-circle" id="avatar-initials"></div>
+        <h3 id="dash-username">Loading</h3>
+        <small id="dash-role"></small>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="active" onclick="showTab('overview',this)"><span class="ico"></span> Overview</a>
+        <a href="#" onclick="showTab('bookings-buyer',this)"><span class="ico"></span> My Bookings</a>
+        <a href="#" onclick="showTab('bookings-seller',this)"><span class="ico"></span> Service Requests</a>
+        <a href="#" onclick="showTab('inbox',this)"><span class="ico"></span> Inbox <span id="unread-badge" style="display:none;background:var(--gold);color:white;font-size:.65rem;padding:1px 7px;border-radius:20px;margin-left:4px;"></span></a>
+        <a href="#" onclick="showTab('my-listings',this)"><span class="ico"></span> My Listings</a>
+        <a href="home.html" style="margin-top:12px;"><span class="ico"></span> Back to Siza</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+
+      <div class="tab-group active" id="tab-overview">
+        <h2 class="page-title"> Welcome back</h2>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:28px;">
+          <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07);text-align:center;border-top:4px solid var(--green);">
+            <div style="font-size:1.8rem;font-family:'Playfair Display',serif;color:var(--green);" id="stat-buyr"></div>
+            <div style="font-size:.8rem;color:#888;margin-top:4px;">Bookings Made</div>
+          </div>
+          <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07);text-align:center;border-top:4px solid var(--gold);">
+            <div style="font-size:1.8rem;font-family:'Playfair Display',serif;color:var(--gold);" id="stat-selr"></div>
+            <div style="font-size:.8rem;color:#888;margin-top:4px;">Service Requests</div>
+          </div>
+          <div style="background:white;border-radius:12px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,.07);text-align:center;border-top:4px solid var(--tan);">
+            <div style="font-size:1.8rem;font-family:'Playfair Display',serif;color:var(--tan);" id="stat-msg"></div>
+            <div style="font-size:.8rem;color:#888;margin-top:4px;">Unread Messages</div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3> Quick Actions</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="home.html" style="text-decoration:none;background:#f5efe8;color:var(--brown);padding:10px 20px;border-radius:8px;font-size:.875rem;font-weight:600;"> Browse Listings</a>
+            <button onclick="showSellForm()" style="background:var(--green);color:white;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;">+ Post a Listing</button>
+            <button onclick="showTab('my-listings',document.querySelector('.sidebar-nav a:nth-child(4)'))" style="background:var(--tan);color:white;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;"> My Listings</button>
+            <button onclick="showTab('inbox',document.querySelector('.sidebar-nav a:nth-child(5)'))" style="background:#7d6a5a;color:white;border:none;border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;"> Check Inbox</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-bookings-buyer">
+        <h2 class="page-title"> My Bookings</h2>
+        <div class="section-card">
+          <h3> Bookings I Made</h3>
+          <div id="bookings-buyer"><p style="color:#aaa;font-size:.875rem;">Loading</p></div>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-bookings-seller">
+        <h2 class="page-title">Service Requests</h2>
+        <div class="section-card">
+          <h3> Requests for My Services</h3>
+          <div id="bookings-seller"><p style="color:#aaa;font-size:.875rem;">Loading</p></div>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-my-listings">
+        <h2 class="page-title"> My Listings</h2>
+        <div class="section-card">
+          <h3 style="margin-bottom:16px;"> Items & Services I'm Selling
+            <button onclick="showSellForm()" style="float:right;background:var(--green);color:white;border:none;border-radius:6px;padding:6px 14px;font-size:.8rem;cursor:pointer;">+ New Listing</button>
+          </h3>
+          <div id="my-listings-list"><p style="color:#aaa;font-size:.875rem;">Loading</p></div>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-inbox">
+        <h2 class="page-title"> Inbox</h2>
+        <div class="section-card">
+          <h3> Messages</h3>
+          <div id="inbox-list"><p style="color:#aaa;font-size:.875rem;">Loading</p></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="sell-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:white;border-radius:14px;padding:30px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+      <button onclick="hideSellForm()" style="position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;width:auto;padding:0;"></button>
+      <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:20px;">New Listing</h3>
+
+      <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Title *</label>
+      <input type="text" id="title" placeholder="Item or service name" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;font-size:.9rem;margin-bottom:12px;">
+
+      <div style="display:flex;gap:10px;margin-bottom:12px;">
+        <div style="flex:1;">
+          <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Type</label>
+          <select id="itemType" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;" onchange="document.getElementById('priceUnit').value=this.value==='service'?'per_hour':'fixed'">
+            <option value="goods">Goods</option>
+            <option value="service">Service</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Category</label>
+          <select id="category" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;">
+            <option value="1">Electronics</option>
+            <option value="2">Clothing & Fashion</option>
+            <option value="3">Food & Beverages</option>
+            <option value="4">Furniture</option>
+            <option value="5">Tutoring</option>
+            <option value="6">Cleaning</option>
+            <option value="7">Repairs</option>
+            <option value="8">Transport</option>
+            <option value="9">Hair & Beauty</option>
+            <option value="10">Digital Services</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Description *</label>
+      <textarea id="description" rows="3" placeholder="Describe the item or service" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;resize:vertical;margin-bottom:12px;"></textarea>
+
+      <div style="display:flex;gap:10px;margin-bottom:12px;">
+        <div style="flex:1;">
+          <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Price (R) *</label>
+          <input type="number" id="price" placeholder="e.g. 350" min="0" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Price Unit</label>
+          <select id="priceUnit" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;">
+            <option value="fixed">Fixed</option>
+            <option value="per_hour">Per hour</option>
+            <option value="per_day">Per day</option>
+            <option value="negotiable">Negotiable</option>
+          </select>
+        </div>
+      </div>
+
+      <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Location *</label>
+      <input type="text" id="location" placeholder="e.g. Soweto, Diepkloof" style="width:100%;padding:10px;border:1.5px solid #e0d8d0;border-radius:8px;font-family:inherit;margin-bottom:12px;">
+
+      <label style="font-size:.8rem;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px;">Photos (optional)</label>
+      <input type="file" id="itemImages" accept="image/*" multiple style="width:100%;padding:6px;margin-bottom:16px;">
+
+      <div style="display:flex;gap:10px;">
+        <button onclick="hideSellForm()" style="flex:1;padding:11px;background:#f0ede9;color:#555;border:none;border-radius:8px;">Cancel</button>
+        <button id="submitListingBtn" onclick="addProduct()" style="flex:2;padding:11px;background:var(--green);color:white;border:none;border-radius:8px;font-weight:600;">Post Listing</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-box" id="chatBox" style="display:none;flex-direction:column;">
+    <div class="chat-header">
+      <span> Chat</span>
+      <button onclick="closeChat()"></button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Type a message">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <button class="fab-sell" onclick="showSellForm()">+ Post Listing</button>
+
+  <script src="js/java.js"></script>
+  <script>
+    function showTab(name, linkEl) {
+      document.querySelectorAll('.tab-group').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + name)?.classList.add('active');
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      if (linkEl) linkEl.classList.add('active');
+    }
+
+    function showSellForm() {
+      const o = document.getElementById('sell-overlay');
+      o.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function hideSellForm() {
+      document.getElementById('sell-overlay').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    document.getElementById('sell-overlay').addEventListener('click', function(e) {
+      if (e.target === this) hideSellForm();
+    });
+
+    window.openForm  = showSellForm;
+    window.closeForm = hideSellForm;
+
+    // Load dashboard data
+    async function loadDashboardPage() {
+      const loggedIn = await checkSession();
+      if (!loggedIn) { window.location.href = 'LogIn.html'; return; }
+
+      // Set avatar & name
+      document.getElementById('dash-username').textContent = state.user.name;
+      document.getElementById('dash-role').textContent     = state.user.role;
+      document.getElementById('avatar-initials').textContent = initials(state.user.name);
+
+      // Load all data
+      await Promise.all([
+        loadMyBookings('buyer'),
+        loadMyBookings('seller'),
+        loadInbox(),
+        loadUnreadCount(),
+        loadMyListings(),
+      ]);
+    }
+
+    async function loadMyListings() {
+      const el = document.getElementById('my-listings-list');
+      if (!el) return;
+      el.innerHTML = '<p style="color:#aaa;font-size:.875rem;">Loading</p>';
+
+      const data = await api(API.listings, { action: 'my_listings' });
+      if (!data.success || !data.listings.length) {
+        el.innerHTML = `<p style="color:#aaa;font-size:.875rem;">You have no listings yet. <a href="#" onclick="showSellForm()" style="color:var(--green);">Post one now </a></p>`;
+        return;
+      }
+
+      const statusColors = { active:'var(--green)', inactive:'#aaa', sold:'var(--tan)', flagged:'#c0392b' };
+      el.innerHTML = data.listings.map(l => `
+        <div style="border:1px solid #eee;border-radius:10px;padding:14px;margin-bottom:10px;background:#fdfaf7;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;">
+            <strong style="font-size:.9rem;">${l.title}</strong>
+            <p style="margin:3px 0;font-size:.8rem;color:#777;">${l.category_name} &bull; ${l.type}</p>
+            <p style="margin:2px 0;font-size:.8rem;color:var(--green);font-weight:700;">R ${parseFloat(l.price).toFixed(2)} <span style="font-weight:400;color:#aaa;">(${l.price_unit})</span></p>
+            <p style="margin:2px 0;font-size:.78rem;color:#aaa;"> ${l.location || 'N/A'} &bull;  ${l.views} views</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+            <span style="background:${statusColors[l.status]||'#aaa'};color:white;padding:3px 12px;border-radius:20px;font-size:.7rem;text-transform:uppercase;">${l.status}</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="toggleListingStatus(${l.id},'${l.status}')" style="background:#f0ede9;color:#555;border:none;border-radius:6px;padding:5px 10px;font-size:.75rem;cursor:pointer;">
+                ${l.status === 'active' ? 'Deactivate' : 'Activate'}
+              </button>
+              <button onclick="confirmDeleteListing(${l.id})" style="background:rgba(192,57,43,.1);color:#c0392b;border:none;border-radius:6px;padding:5px 10px;font-size:.75rem;cursor:pointer;"> Delete</button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    async function toggleListingStatus(id, currentStatus) {
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      const data = await api(API.listings, { action: 'update', id, status: newStatus,
+      }, 'POST');
+      const listing = await api(API.listings, { action: 'get', id });
+      if (!listing.success) { toast('Could not fetch listing.', 'error'); return; }
+      const l = listing.listing;
+      const upd = await api(API.listings, {
+        action: 'update', id,
+        title: l.title, description: l.description, category_id: l.category_id,
+        type: l.type, price: l.price, price_unit: l.price_unit, location: l.location || '',
+        status: newStatus,
+      }, 'POST');
+      if (upd.success) { toast(`Listing ${newStatus}.`, 'success'); loadMyListings(); }
+      else { toast(upd.message || 'Failed.', 'error'); }
+    }
+
+    async function confirmDeleteListing(id) {
+      if (!confirm('Delete this listing? This cannot be undone.')) return;
+      const data = await api(API.listings, { action: 'delete', id }, 'POST');
+      if (data.success) { toast('Listing deleted.', 'success'); loadMyListings(); }
+      else { toast(data.message || 'Failed to delete.', 'error'); }
+    }
+
+    async function loadUnreadCount() {
+      const data = await api(API.messages, { action: 'unread' });
+      const badge = document.getElementById('unread-badge');
+      const statMsg = document.getElementById('stat-msg');
+      const count = data.count || 0;
+      if (statMsg) statMsg.textContent = count;
+      if (badge) {
+        if (count > 0) { badge.textContent = count; badge.style.display = 'inline'; }
+        else { badge.style.display = 'none'; }
+      }
+    }
+
+    const _origLoadMyBookings = loadMyBookings;
+    window._bStats = { buyer: 0, seller: 0 };
+
+    async function loadMyBookings(role) {
+      const el = document.getElementById(`bookings-${role}`);
+      if (!el) return;
+      el.innerHTML = '<p style="color:#aaa;font-size:.85rem;">Loading</p>';
+
+      const data = await api(API.bookings, { action: 'my_bookings', role });
+      const list = data.bookings || [];
+
+      const statEl = document.getElementById(role === 'buyer' ? 'stat-buyr' : 'stat-selr');
+      if (statEl) statEl.textContent = list.length;
+
+      if (!list.length) { el.innerHTML = '<p style="color:#aaa;font-size:.875rem;">No bookings yet.</p>'; return; }
+
+      const statusColors = { pending:'#e6a817', confirmed:'rgb(4,170,109)', completed:'#888', cancelled:'#c0392b' };
+      el.innerHTML = list.map(b => `
+        <div style="border:1px solid #eee;border-radius:10px;padding:14px;margin-bottom:10px;background:#fdfaf7;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;">
+            <div>
+              <strong style="font-size:.9rem;">${b.listing_title}</strong>
+              <p style="margin:4px 0;font-size:.8rem;color:#777;">${role === 'buyer' ? 'Seller' : 'Buyer'}: <strong>${b.other_name}</strong></p>
+              <p style="margin:2px 0;font-size:.8rem;color:#777;"> ${b.booking_date} at ${b.booking_time}</p>
+              ${b.notes ? `<p style="margin:2px 0;font-size:.75rem;color:#aaa;"> ${b.notes}</p>` : ''}
+            </div>
+            <span style="background:${statusColors[b.status]||'#aaa'};color:white;padding:3px 12px;border-radius:20px;font-size:.7rem;text-transform:uppercase;white-space:nowrap;height:fit-content;">${b.status}</span>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+            ${role === 'seller' && b.status === 'pending' ? `
+              <button onclick="updateBookingStatus(${b.id},'confirmed')" style="background:rgb(4,170,109);color:white;border:none;border-radius:6px;padding:7px 14px;font-size:.8rem;"> Confirm</button>
+              <button onclick="updateBookingStatus(${b.id},'cancelled')" style="background:#c0392b;color:white;border:none;border-radius:6px;padding:7px 14px;font-size:.8rem;"> Decline</button>` : ''}
+            ${role === 'seller' && b.status === 'confirmed' ? `
+              <button onclick="updateBookingStatus(${b.id},'completed')" style="background:rgb(175,153,134);color:white;border:none;border-radius:6px;padding:7px 14px;font-size:.8rem;"> Mark Complete</button>` : ''}
+            ${(b.status === 'pending' || b.status === 'confirmed') ? `
+              <button onclick="updateBookingStatus(${b.id},'cancelled')" style="background:#f0ede9;color:#c0392b;border:none;border-radius:6px;padding:7px 14px;font-size:.8rem;">Cancel</button>` : ''}
+          </div>
+        </div>`).join('');
+    }
+
+    async function updateBookingStatus(id, status) {
+      const data = await api(API.bookings, { action: 'update_status', id, status }, 'POST');
+      if (data.success) {
+        toast(`Booking ${status}.`, 'success');
+        loadMyBookings('buyer');
+        loadMyBookings('seller');
+      } else {
+        toast(data.message || 'Update failed.', 'error');
+      }
+    }
+
+    async function loadInbox() {
+      const el = document.getElementById('inbox-list');
+      if (!el) return;
+      el.innerHTML = '<p style="color:#aaa;font-size:.875rem;">Loading</p>';
+      const data = await api(API.messages, { action: 'inbox' });
+      if (!data.success || !data.messages.length) {
+        el.innerHTML = '<p style="color:#aaa;font-size:.875rem;">No messages yet. Browse listings and contact a seller!</p>'; return;
+      }
+      el.innerHTML = data.messages.map(m => `
+        <div onclick="openInboxMessage(${m.sender_id},'${m.sender_name}',${m.listing_id||'null'})"
+          style="display:flex;align-items:center;gap:12px;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;background:${m.is_read?'white':'#fffbf5'};transition:background .15s;">
+          <div style="width:38px;height:38px;border-radius:50%;background:rgb(175,153,134);color:white;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0;">${initials(m.sender_name)}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+              <strong style="font-size:.875rem;">${m.sender_name}</strong>
+              <span style="font-size:.7rem;color:#bbb;white-space:nowrap;">${timeAgo(m.created_at)}</span>
+            </div>
+            ${m.listing_title ? `<div style="font-size:.75rem;color:var(--tan);margin:1px 0;">Re: ${m.listing_title}</div>` : ''}
+            <div style="font-size:.82rem;color:#777;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.message}</div>
+          </div>
+          ${!m.is_read ? '<span style="width:9px;height:9px;border-radius:50%;background:var(--gold);flex-shrink:0;"></span>' : ''}
+        </div>`).join('');
+    }
+
+    function openInboxMessage(senderId, senderName, listingId) {
+      state.chatWith = { id: senderId, name: senderName, listingId };
+      const box = document.getElementById('chatBox');
+      if (box) { box.style.display = 'flex'; }
+      const header = document.querySelector('.chat-header span');
+      if (header) header.textContent = senderName;
+      loadConversation(senderId, listingId);
+    }
+
+    loadDashboardPage();
+  </script>
+</body>
+</html>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<title> Siza Initiative </title>
+	<link rel="Sytlesheet" href="style.css" type="text/css" /> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+    <script src="js/java.js"></script>
+
+    
+	<style>
+	
+		.Siza-logo
+		{
+			width: 75px;
+			display: inline-block;
+		}
+
+		.logo{
+			width: 75px;
+			display: inline-block;
+            vertical-align: middle;
+            padding-right: 20px;
+            
+		}
+
+		.Category
+        {
+            width: 160px;
+            display: inline-block;
+            align-content: center;
+            padding-left: 40px;
+        }
+
+        .Category input
+        {
+            width: 160px;
+        }
+
+        .Search-Bar
+        {
+            width: 500px;
+            display: flex;
+            align-content: center;
+        }
+
+        .Main-Search
+        {
+            width: 170px;
+            display: inline-block;
+            align-content: center;
+        }
+
+        .Location
+        {
+            width: 200px;
+            display: inline-block;
+            align-content: center;
+        }
+
+        .Location-input
+        {
+            border: none;   
+        }
+
+        .top-bar
+        {
+            display: flex;
+            align-content: center;
+            padding: 20px 80px;
+            background-color: rgb(175, 153, 134);
+            box-shadow: 0 5px 15px black;
+            position: sticky;
+            top: 0;
+            left: 0;
+        }
+
+        .nav-bar 
+        {
+            display: flex;
+            align-content: center;
+            justify-content: center;
+        }
+
+        .nav-bar li
+        {
+            list-style: none;
+            padding: 0 20px;
+            align-content: center;
+        }
+
+        .nav-bar li a
+        {
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 300;
+            color: black;
+            transition: 0.5s ease;
+        }
+
+        .nav-bar li a:hover
+        {
+            color: rgb(54, 26, 0);
+        }
+
+        .hero
+        {
+            background-image: url(Hero-Section.jpg);
+            background-repeat: no-repeat;
+            background-color: rgba(255, 255, 255, 0.503);
+            height: 100vh;
+            width: 90%;
+            background-size: cover;
+            color: whitesmoke; 
+            padding: 0 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        #features{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .localized-box{
+            width: 220px;
+            text-align: center;
+            padding: 25px 15px;
+            box-shadow: 20px 20px 34px rgba(0,0,0, 0.3);
+            border: 1px solid rgb(204, 231, 208);
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .localized-box img{
+            width: 50%;
+            height: auto;
+        }
+
+        .localized-box:hover{
+            box-shadow: 10px 10px 54px rgba(70,62,221, 0.1);
+        }
+
+        .localized-box h5{
+            padding: 9px 8px 6px 8px;
+            line-height:1 ;
+            border-radius: 4px;
+            color: rgb(201, 141, 0);
+            background-color: rgb(165, 12, 12);
+        }
+
+        .support-box
+        {
+            width: 220px;
+            text-align: center;
+            padding: 25px 15px;
+            box-shadow: 20px 20px 34px rgba(0,0,0, 0.3);
+            border: 1px solid rgb(204, 231, 208);
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        .support-box img{
+            width: 50%;
+            height: auto;
+        }
+
+        .support-box:hover
+        {
+            box-shadow: 10px 10px 54px rgba(70,62,221, 0.1);
+        }
+
+        .support-box h5
+        {
+            padding: 9px 8px 6px 8px;
+            line-height:1;
+            border-radius: 4px;
+            color: rgb(144, 0, 201);
+            background-color: rgb(1, 1, 1);
+        }
+
+        .listing
+        {
+            width: 220px;
+            text-align: center;
+            padding: 25px 15px;
+            box-shadow: 20px 20px 34px rgba(0,0,0, 0.3);
+            border: 1px solid rgb(204, 231, 208);
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        .listing img{
+            width: 50%;
+            height: auto;
+        }
+
+        .listing:hover
+        {
+            box-shadow: 10px 10px 54px rgba(70,62,221, 0.1);
+        }
+
+        .listing h5
+        {
+            padding: 9px 8px 6px 8px;
+            line-height:1;
+            border-radius: 4px;
+            color: rgb(12, 30, 165);
+            background-color:rgb(0, 201, 0) ;
+        }
+
+        .section-p1
+        {
+            padding: 40px 80px;
+        }
+
+        .top-nav
+        {
+            background-color: rgb(225, 175, 131);;
+            padding: 10px 40px;
+        }
+
+        .nav-links
+        {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            list-style: none;
+        }
+
+        .nav-links li
+        {
+            padding: 0 10px;
+        }
+
+        .nav-links li a
+        {
+            text-decoration: none;
+            font-size: 14px;
+            color: rgb(51, 51, 51);
+            transition: 0.3s ease;
+        }
+
+        .nav-links li a:hover
+        {
+            color:  rgb(54, 26, 0);
+        }
+
+
+        .products
+        {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Cards */
+        .card
+        {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card img
+        {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .card h4
+        {
+            margin: 10px 0 5px;
+        }
+
+        .card p
+        {
+            color: rgb(0, 150, 0);
+        }
+
+        /* Add button */
+.add-btn
+{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background-color: rgb(0,120,255);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Popup form */
+.form-popup
+{
+    display: none;
+    position: fixed;
+    top: 20%;
+    left: 35%;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 5px 15px black;
+}
+
+.form-container input,
+.form-container select
+{
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+/* Chat box */
+.chat-box
+{
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 250px;
+    background-color: white;
+    border: 1px solid gray;
+    display: none;
+}
+
+.chat-header
+{
+    background-color: rgb(0,120,255);
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.chat-messages
+{
+    height: 150px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.chat-box input
+{
+    width: 70%;
+    padding: 5px;
+}
+	
+	</style>
+
+ 
+</head>
+
+
+<body>
+
+
+    <section class="top-bar">
+        <div class="logo">
+            <a hre="home.html">
+                <img class="Siza-logo" src="handshake-solid-full.svg"  alt="The logo for Siza" >
+            </a>		 
+        </div>
+    
+        <div class="Category">
+            <input type="text" placeholder="Category">         		
+        </div>
+    
+        <div class="Search-Bar">
+
+            <div class="Main-Search">
+                <span class="Search-Bar-Title">
+                    <input type="text" name="q" value="" placeholder="What are you looking for?">
+                </span>
+            </div>
+    
+            <div class="Location">
+                <i class="fa fa-location-pin"></i>
+                <select>
+                    <option value="">All areas</option>
+                    <option>Soweto</option>
+                    <option>Alexandra</option>
+                    <option>Nelspruit</option>
+                    <option>Tembisa</option>
+                    <option>Diepkloof</option>
+                    <option>Mamelodi</option>
+                    <option>Khayelitsha</option>
+                    <option>Cape Town</option>
+                  </select>
+                
+            </div>
+        </div>
+
+        <ul class="nav-bar">
+            <li>
+                 <a href="SignUP.html"> Sign Up </a>
+            </li>
+
+            <li>
+                <a href="LogIn.html"> Log In </a>
+           </li>
+           
+        </ul>
+    </section>
+
+    <div class="top-nav">
+        <ul class="nav-links">
+            <li><a href="#">Cars & Bakkies</a></li>
+            <li><a href="#">Electronics</a></li>
+            <li><a href="#">Collectibles</a></li>
+            <li><a href="#">Home and garden</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Toys</a></li>
+            <li><a href="#">Sporting goods</a></li>
+            <li><a href="#">Jewelry</a></li>
+        </ul>
+    </div>
+
+    <section class="hero">
+        <h1> Safe trade in your local area</h1>
+        <h1> Anytime, Anywhere, Anyhow</h1>
+        <h1> For South Africans By South Africans</h1>
+    </section>
+
+    <div class="products" id="productList">
+
+        <div class="card" data-category="electronics">
+            <img src="smartphone.webp">
+            <h4>Smartphone</h4>
+            <p>R2500</p>
+        </div>
+
+        <div class="card" data-category="clothing">
+            <img src="jacket.webp">
+            <h4>Jacket</h4>
+            <p>R600</p>
+        </div>
+
+        <div class="card" data-category="furniture">
+            <img src="chair.jpg">
+            <h4>Chair</h4>
+            <p>R800</p>
+        </div>
+
+        <div class="card" data-category="Services">
+            <img src="catering.jpeg">
+            <h4>Catering Serivice</h4>
+            <p>R9000</p>
+        </div>
+
+    </div>
+
+        <!-- Add Product Button -->
+    <button class="add-btn" onclick="openForm()">+ Sell Item</button>
+
+    <!-- Add Product Form -->
+    <div class="form-popup" id="productForm">
+        <div class="form-container">
+            <h3>Add Product</h3>
+
+            <input type="text" id="title" placeholder="Item title">
+            <input type="text" id="price" placeholder="Price">
+            <input type="text" id="location" placeholder="Location">
+            
+            <select id="category">
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing</option>
+                <option value="furniture">Furniture</option>
+            </select>
+
+            <button onclick="addProduct()">Add</button>
+            <button class="cancel" onclick="closeForm()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Messaging Box -->
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <span>Chat</span>
+            <button onclick="closeChat()">X</button>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <input type="text" id="chatInput" placeholder="Type message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <section id="features" class="section-p1">
+
+        <h2> Notable Features</h2>
+
+        <div class="localized-box">
+            <img src="localized.png" alt="Lozalized icon">
+             <h5> Localized to your area</h5>
+        </div>
+
+        <div class="support-box">
+            <img src="24-hr-support-icon.png" alt="supporticon">
+             <h5> 24 Hour support</h5>
+        </div>
+
+        <div class="listing">
+            <img src="listing icon.png" alt="Listing icon">
+             <h5> easy listings</h5>
+        </div>
+
+        
+    </section>
+
+
+</body>
+
+
+
+
+
+</html>

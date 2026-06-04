@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel Siza</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --tan:   rgb(175,153,134);
+      --brown: rgb(54,26,0);
+      --green: rgb(4,170,109);
+      --gold:  rgb(201,141,0);
+      --red:   #c0392b;
+      --white: #fdfaf7;
+    }
+
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 40px; background: var(--brown); color: white;
+      position: sticky; top: 0; z-index: 100; gap: 16px; flex-wrap: wrap;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; }
+    .admin-badge { background: var(--red); color: white; font-size: .7rem; padding: 2px 9px; border-radius: 20px; font-weight: 700; letter-spacing: .06em; }
+    .top-bar nav a { color: rgba(255,255,255,.7); text-decoration: none; font-size: .875rem; margin-left: 18px; transition: color .2s; }
+    .top-bar nav a:hover { color: white; }
+
+    .layout { display: flex; min-height: calc(100vh - 52px); }
+
+    .sidebar { width: 220px; flex-shrink: 0; background: white; border-right: 1px solid #e8e0d8; padding: 24px 0; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 22px; text-decoration: none;
+      font-size: .875rem; color: #666;
+      transition: background .15s, color .15s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { background: #f5efe8; color: var(--brown); }
+    .sidebar-nav a.active { background: #f5efe8; color: var(--brown); border-left-color: var(--red); font-weight: 600; }
+
+    .main { flex: 1; padding: 32px 40px; overflow-x: hidden; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 22px; }
+    .tab-group { display: none; }
+    .tab-group.active { display: block; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 3px 12px rgba(0,0,0,.07); text-align: center; }
+    .stat-card .num { font-family: 'Playfair Display', serif; font-size: 2rem; }
+    .stat-card .lbl { font-size: .75rem; color: #999; text-transform: uppercase; letter-spacing: .05em; margin-top: 4px; }
+
+    .table-card { background: white; border-radius: 12px; box-shadow: 0 3px 12px rgba(0,0,0,.07); overflow: hidden; margin-bottom: 24px; }
+    .table-card-header { padding: 16px 20px; border-bottom: 1px solid #f0ede9; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .table-card-header h3 { font-size: .95rem; }
+    .table-card-header input { padding: 7px 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: .82rem; width: 220px; }
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+    th { background: #f9f6f2; padding: 10px 14px; text-align: left; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: .04em; font-size: .72rem; border-bottom: 1px solid #f0ede9; }
+    td { padding: 10px 14px; border-bottom: 1px solid #f8f5f2; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fdfaf7; }
+
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .badge-green  { background: rgba(4,170,109,.12); color: rgb(4,170,109); }
+    .badge-gold   { background: rgba(201,141,0,.12); color: rgb(130,90,0); }
+    .badge-red    { background: rgba(192,57,43,.12); color: var(--red); }
+    .badge-grey   { background: rgba(0,0,0,.07); color: #777; }
+    .badge-tan    { background: rgba(175,153,134,.2); color: rgb(90,65,45); }
+
+    .act-btn { border: none; border-radius: 5px; padding: 5px 11px; font-size: .75rem; cursor: pointer; font-family: inherit; font-weight: 600; transition: opacity .15s; }
+    .act-btn:hover { opacity: .8; }
+    .btn-verify   { background: rgba(4,170,109,.12); color: rgb(4,170,109); }
+    .btn-delete   { background: rgba(192,57,43,.12); color: var(--red); }
+    .btn-flag     { background: rgba(201,141,0,.12); color: rgb(130,90,0); }
+    .btn-resolve  { background: rgba(4,170,109,.12); color: rgb(4,170,109); }
+    .btn-remove   { background: rgba(192,57,43,.12); color: var(--red); }
+
+    .empty { padding: 32px; text-align: center; color: #bbb; font-size: .875rem; }
+
+    .filter-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+    .filter-row input, .filter-row select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: .82rem; }
+
+    button { font-family: 'DM Sans', sans-serif; }
+
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .main { padding: 20px 16px; }
+      .top-bar { padding: 13px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top-bar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a class="logo" href="home.html">
+        <span style="font-size:1.3rem;"></span>
+        <span class="logo-text">Siza</span>
+      </a>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <nav>
+      <a href="home.html"> Browse</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="#" onclick="handleLogout(event)">Log Out</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="active" onclick="showTab('overview',this)"> Overview</a>
+        <a href="#" onclick="showTab('users',this)">Users</a>
+        <a href="#" onclick="showTab('listings',this)">Listings</a>
+        <a href="#" onclick="showTab('reports',this)">Reports <span id="report-badge" style="display:none;background:var(--red);color:white;font-size:.65rem;padding:1px 6px;border-radius:20px;margin-left:4px;"></span></a>
+        <a href="#" onclick="showTab('logs',this)">Admin Logs</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+
+      <div class="tab-group active" id="tab-overview">
+        <h2 class="page-title"> Overview</h2>
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card"><div class="num" id="s-users"></div><div class="lbl">Total Users</div></div>
+          <div class="stat-card"><div class="num" id="s-listings"></div><div class="lbl">Listings</div></div>
+          <div class="stat-card"><div class="num" id="s-active"></div><div class="lbl">Active</div></div>
+          <div class="stat-card"><div class="num" id="s-bookings"></div><div class="lbl">Bookings</div></div>
+          <div class="stat-card"><div class="num" id="s-messages"></div><div class="lbl">Messages</div></div>
+          <div class="stat-card"><div class="num" style="color:var(--red);" id="s-reports"></div><div class="lbl">Open Reports</div></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;" class="recent-grids">
+          <div class="table-card">
+            <div class="table-card-header"><h3>Recent Users</h3></div>
+            <table id="tbl-recent-users">
+              <thead><tr><th>Name</th><th>Role</th><th>Verified</th></tr></thead>
+              <tbody><tr><td colspan="3" class="empty">Loading</td></tr></tbody>
+            </table>
+          </div>
+          <div class="table-card">
+            <div class="table-card-header"><h3>Recent Listings</h3></div>
+            <table id="tbl-recent-listings">
+              <thead><tr><th>Title</th><th>Seller</th><th>Status</th></tr></thead>
+              <tbody><tr><td colspan="3" class="empty">Loading</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-users">
+        <h2 class="page-title"> Users</h2>
+        <div class="table-card">
+          <div class="table-card-header">
+            <h3>All Users</h3>
+            <input type="text" id="user-search" placeholder="Search by name or email" oninput="filterTable('users-tbody', this.value, [0,1])">
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Role</th><th>Location</th>
+                <th>Rating</th><th>Verified</th><th>Joined</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="8" class="empty">Loading</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-listings">
+        <h2 class="page-title">Listings</h2>
+        <div class="filter-row">
+          <input type="text" id="listing-search" placeholder="Search listings" oninput="filterTable('listings-tbody', this.value, [0,1,2])">
+          <select onchange="filterTableByCol('listings-tbody', this.value, 4)">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="flagged">Flagged</option>
+            <option value="sold">Sold</option>
+          </select>
+          <select onchange="filterTableByCol('listings-tbody', this.value, 3)">
+            <option value="">All types</option>
+            <option value="goods">Goods</option>
+            <option value="service">Service</option>
+          </select>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header"><h3>All Listings</h3></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th><th>Seller</th><th>Category</th><th>Type</th>
+                <th>Status</th><th>Price</th><th>Views</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="listings-tbody">
+              <tr><td colspan="8" class="empty">Loading</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-reports">
+        <h2 class="page-title"> Reports</h2>
+        <div class="table-card">
+          <div class="table-card-header"><h3>User Reports</h3></div>
+          <table>
+            <thead>
+              <tr><th>Reporter</th><th>Reason</th><th>Details</th><th>Status</th><th>Date</th><th>Action</th></tr>
+            </thead>
+            <tbody id="reports-tbody">
+              <tr><td colspan="6" class="empty">Loading</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="tab-group" id="tab-logs">
+        <h2 class="page-title">Admin Logs</h2>
+        <div class="table-card">
+          <div class="table-card-header"><h3>Last 50 Actions</h3></div>
+          <table>
+            <thead>
+              <tr><th>Admin</th><th>Action</th><th>Target</th><th>Target ID</th><th>Date</th></tr>
+            </thead>
+            <tbody id="logs-tbody">
+              <tr><td colspan="5" class="empty">Loading</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="js/java.js"></script>
+  <script>
+    //  Tab switching 
+    function showTab(name, linkEl) {
+      document.querySelectorAll('.tab-group').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + name)?.classList.add('active');
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      if (linkEl) linkEl.classList.add('active');
+
+      // Lazy-load data on first visit
+      if (name === 'users'    && document.getElementById('users-tbody').textContent.includes('Loading'))    loadUsers();
+      if (name === 'listings' && document.getElementById('listings-tbody').textContent.includes('Loading')) loadAdminListings();
+      if (name === 'reports'  && document.getElementById('reports-tbody').textContent.includes('Loading'))  loadReports();
+      if (name === 'logs'     && document.getElementById('logs-tbody').textContent.includes('Loading'))     loadLogs();
+    }
+
+    //  Table search filter 
+    function filterTable(tbodyId, query, cols) {
+      const q = query.toLowerCase();
+      document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+        const text = cols.map(c => (tr.cells[c]?.textContent || '').toLowerCase()).join(' ');
+        tr.style.display = text.includes(q) ? '' : 'none';
+      });
+    }
+
+    function filterTableByCol(tbodyId, value, col) {
+      const q = value.toLowerCase();
+      document.querySelectorAll(`#${tbodyId} tr`).forEach(tr => {
+        const cell = (tr.cells[col]?.textContent || '').toLowerCase();
+        tr.style.display = (!q || cell.includes(q)) ? '' : 'none';
+      });
+    }
+
+    // Format helpers 
+    function fmtDate(str) {
+      if (!str) return '—';
+      return new Date(str).toLocaleDateString('en-ZA', { day:'numeric', month:'short', year:'numeric' });
+    }
+
+    function statusBadge(s) {
+      const map = { active:'badge-green', inactive:'badge-grey', sold:'badge-tan', flagged:'badge-red', open:'badge-red', resolved:'badge-green', reviewed:'badge-gold' };
+      return `<span class="badge ${map[s]||'badge-grey'}">${s}</span>`;
+    }
+
+    function roleBadge(r) {
+      const map = { admin:'badge-red', seller:'badge-gold', buyer:'badge-green' };
+      return `<span class="badge ${map[r]||'badge-grey'}">${r}</span>`;
+    }
+
+    //  Load Overview Stats 
+    async function loadStats() {
+      const data = await api(API.admin, { action: 'stats' });
+      if (!data.success) { toast('Could not load stats.', 'error'); return; }
+      const s = data.stats;
+      document.getElementById('s-users').textContent    = s.users;
+      document.getElementById('s-listings').textContent = s.listings;
+      document.getElementById('s-active').textContent   = s.active;
+      document.getElementById('s-bookings').textContent = s.bookings;
+      document.getElementById('s-messages').textContent = s.messages;
+      document.getElementById('s-reports').textContent  = s.reports;
+
+      // Badges
+      const badge = document.getElementById('report-badge');
+      if (s.reports > 0) { badge.textContent = s.reports; badge.style.display = 'inline'; }
+
+      // Recent Users
+      const rub = document.querySelector('#tbl-recent-users tbody');
+      rub.innerHTML = (s.recent_users || []).map(u => `
+        <tr>
+          <td><strong>${u.full_name}</strong><br><small style="color:#aaa;">${u.email}</small></td>
+          <td>${roleBadge(u.role)}</td>
+          <td>${u.is_verified ? '<span style="color:var(--green);">Yes</span>' : '<span style="color:#ccc;">No</span>'}</td>
+        </tr>`).join('') || '<tr><td colspan="3" class="empty">None yet.</td></tr>';
+
+      // Recent Listings
+      const rlb = document.querySelector('#tbl-recent-listings tbody');
+      rlb.innerHTML = (s.recent_listings || []).map(l => `
+        <tr>
+          <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title}</td>
+          <td>${l.seller}</td>
+          <td>${statusBadge(l.status)}</td>
+        </tr>`).join('') || '<tr><td colspan="3" class="empty">None yet.</td></tr>';
+    }
+
+    //  Load Users 
+    async function loadUsers() {
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">Loading</td></tr>';
+      const data = await api(API.admin, { action: 'users' });
+      if (!data.success) { tbody.innerHTML = '<tr><td colspan="8" class="empty">Failed to load.</td></tr>'; return; }
+      if (!data.users.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No users found.</td></tr>'; return; }
+
+      tbody.innerHTML = data.users.map(u => `
+        <tr>
+          <td><strong>${u.full_name}</strong></td>
+          <td style="color:#777;font-size:.78rem;">${u.email}</td>
+          <td>${roleBadge(u.role)}</td>
+          <td style="color:#888;font-size:.8rem;">${u.location || '—'}</td>
+          <td style="color:var(--gold);">${parseFloat(u.rating_avg||0).toFixed(1)} </td>
+          <td>${u.is_verified ? '<span style="color:var(--green);font-weight:600;"> Yes</span>' : '<span style="color:#ccc;">No</span>'}</td>
+          <td style="color:#aaa;font-size:.75rem;">${fmtDate(u.created_at)}</td>
+          <td style="display:flex;gap:5px;flex-wrap:wrap;">
+            ${!u.is_verified ? `<button class="act-btn btn-verify" onclick="verifyUser(${u.id},this)">Verify</button>` : ''}
+            <button class="act-btn btn-delete" onclick="deleteUser(${u.id}, '${u.full_name}', this)">Delete</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function verifyUser(id, btn) {
+      btn.disabled = true; btn.textContent = '...';
+      const data = await api(API.admin, { action: 'verify_user', id }, 'POST');
+      if (data.success) { toast('User verified ', 'success'); loadUsers(); }
+      else { toast(data.message || 'Failed.', 'error'); btn.disabled = false; btn.textContent = 'Verify'; }
+    }
+
+    async function deleteUser(id, name, btn) {
+      if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+      btn.disabled = true;
+      const data = await api(API.admin, { action: 'delete_user', id }, 'POST');
+      if (data.success) { toast('User deleted.', 'success'); loadUsers(); }
+      else { toast(data.message || 'Failed.', 'error'); btn.disabled = false; }
+    }
+
+    // Load Listings
+    async function loadAdminListings() {
+      const tbody = document.getElementById('listings-tbody');
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">Loading</td></tr>';
+      const data = await api(API.admin, { action: 'listings' });
+      if (!data.success) { tbody.innerHTML = '<tr><td colspan="8" class="empty">Failed to load.</td></tr>'; return; }
+      if (!data.listings.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty">No listings found.</td></tr>'; return; }
+
+      tbody.innerHTML = data.listings.map(l => `
+        <tr>
+          <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><strong>${l.title}</strong></td>
+          <td style="color:#888;font-size:.8rem;">${l.seller_name}</td>
+          <td style="color:#aaa;font-size:.78rem;">${l.category_name}</td>
+          <td>${l.type === 'service' ? '<span class="badge badge-green">Service</span>' : '<span class="badge badge-gold">Goods</span>'}</td>
+          <td>${statusBadge(l.status)}</td>
+          <td style="font-weight:600;">R ${parseFloat(l.price).toFixed(2)}</td>
+          <td style="color:#aaa;">${l.views}</td>
+          <td style="display:flex;gap:5px;flex-wrap:wrap;">
+            ${l.status !== 'flagged' ? `<button class="act-btn btn-flag" onclick="flagListing(${l.id},this)">Flag</button>` : ''}
+            <button class="act-btn btn-remove" onclick="removeListing(${l.id},'${l.title.replace(/'/g,'`')}',this)">Remove</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function flagListing(id, btn) {
+      btn.disabled = true; btn.textContent = '...';
+      const data = await api(API.admin, { action: 'flag_listing', id }, 'POST');
+      if (data.success) { toast('Listing flagged.', 'info'); loadAdminListings(); }
+      else { toast(data.message || 'Failed.', 'error'); btn.disabled = false; btn.textContent = 'Flag'; }
+    }
+
+    async function removeListing(id, title, btn) {
+      if (!confirm(`Remove listing "${title}"? This cannot be undone.`)) return;
+      btn.disabled = true;
+      const data = await api(API.admin, { action: 'remove_listing', id }, 'POST');
+      if (data.success) { toast('Listing removed.', 'success'); loadAdminListings(); }
+      else { toast(data.message || 'Failed.', 'error'); btn.disabled = false; }
+    }
+
+    // Load Reports 
+    async function loadReports() {
+      const tbody = document.getElementById('reports-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">Loading</td></tr>';
+      const data = await api(API.admin, { action: 'reports' });
+      if (!data.success) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Failed to load.</td></tr>'; return; }
+      if (!data.reports.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">No reports. </td></tr>'; return; }
+
+      tbody.innerHTML = data.reports.map(r => `
+        <tr>
+          <td><strong>${r.reporter_name}</strong></td>
+          <td>${r.reason}</td>
+          <td style="color:#777;font-size:.78rem;max-width:200px;">${r.details || '—'}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td style="color:#aaa;font-size:.75rem;">${fmtDate(r.created_at)}</td>
+          <td>
+            ${r.status === 'open' ? `<button class="act-btn btn-resolve" onclick="resolveReport(${r.id},this)">Resolve</button>` : '—'}
+          </td>
+        </tr>`).join('');
+    }
+
+    async function resolveReport(id, btn) {
+      btn.disabled = true; btn.textContent = '...';
+      const data = await api(API.admin, { action: 'resolve_report', id }, 'POST');
+      if (data.success) { toast('Report resolved.', 'success'); loadReports(); loadStats(); }
+      else { toast(data.message || 'Failed.', 'error'); btn.disabled = false; btn.textContent = 'Resolve'; }
+    }
+
+    // Load Logs 
+    async function loadLogs() {
+      const tbody = document.getElementById('logs-tbody');
+      tbody.innerHTML = '<tr><td colspan="5" class="empty">Loading</td></tr>';
+      const data = await api(API.admin, { action: 'logs' });
+      if (!data.success) { tbody.innerHTML = '<tr><td colspan="5" class="empty">Failed to load.</td></tr>'; return; }
+      if (!data.logs.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No actions logged yet.</td></tr>'; return; }
+
+      tbody.innerHTML = data.logs.map(l => `
+        <tr>
+          <td><strong>${l.admin_name}</strong></td>
+          <td>${l.action}</td>
+          <td style="color:#aaa;font-size:.78rem;">${l.target || '—'}</td>
+          <td style="color:#aaa;font-size:.78rem;">${l.target_id || '—'}</td>
+          <td style="color:#aaa;font-size:.75rem;">${fmtDate(l.created_at)}</td>
+        </tr>`).join('');
+    }
+
+    async function init() {
+      const loggedIn = await checkSession();
+      if (!loggedIn) { window.location.href = 'LogIn.html'; return; }
+      if (state.user?.role !== 'admin') {
+        toast('Admin access required.', 'error');
+        setTimeout(() => { window.location.href = 'home.html'; }, 1500);
+        return;
+      }
+      loadStats();
+    }
+
+    init();
+  </script>
+</body>
+</html>

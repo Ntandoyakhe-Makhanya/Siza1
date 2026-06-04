@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In Siza</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #f5efe8 0%, #e8ddd4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(54,26,0,.14);
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: rgb(54, 26, 0);
+      padding: 36px 36px 28px;
+      text-align: center;
+      color: white;
+    }
+    .card-header img   { width: 56px; margin-bottom: 12px; filter: brightness(0) invert(1); }
+    .card-header h1    { font-family: 'Playfair Display', serif; font-size: 1.7rem; margin-bottom: 4px; }
+    .card-header p     { opacity: .7; font-size: .875rem; }
+
+    .card-body { padding: 32px 36px 28px; }
+
+    label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    input[type=text],
+    input[type=password] {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      border: 1.5px solid #e0d8d0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .95rem;
+      background: #fdfaf7;
+      transition: border .2s, box-shadow .2s;
+      display: block;
+    }
+    input:focus { outline: none; border-color: rgb(4,170,109); box-shadow: 0 0 0 3px rgba(4,170,109,.1); }
+
+    .remember { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; font-size: .875rem; color: #777; }
+    .remember input { width: auto; margin: 0; padding: 0; }
+
+    button[type=submit] {
+      width: 100%;
+      padding: 13px;
+      background: rgb(4, 170, 109);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      margin-bottom: 12px;
+    }
+    button[type=submit]:hover { background: #028a57; }
+    button[type=submit]:active { transform: scale(.98); }
+
+    .cancelbtn {
+      width: 100%;
+      padding: 11px;
+      background: #f0ede9;
+      color: #555;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .cancelbtn:hover { background: #e4dfd9; }
+
+    .card-footer {
+      padding: 20px 36px 28px;
+      text-align: center;
+      border-top: 1px solid #f0ede9;
+      font-size: .875rem;
+      color: #888;
+    }
+    .card-footer a  { color: rgb(4,170,109); text-decoration: none; font-weight: 600; }
+    .card-footer .psw-link { float: right; }
+    .back-link { display: block; text-align: center; margin-top: 16px; font-size: .82rem; }
+    .back-link a { color: rgb(54,26,0); text-decoration: none; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="card-header">
+      <img src="handshake-solid-full.svg" alt="Siza logo">
+      <h1>Welcome Back</h1>
+      <p>Log in to your Siza account</p>
+    </div>
+
+    <form name="login" action="php/auth.php?action=login" method="post">
+      <div class="card-body">
+        <label for="uname">Email Address</label>
+        <input type="text" id="uname" name="uname" placeholder="you@example.com" required autocomplete="email">
+
+        <label for="psw">Password</label>
+        <input type="password" id="psw" name="psw" placeholder="Enter your password" required autocomplete="current-password">
+
+        <div class="remember">
+          <input type="checkbox" id="remember" name="remember" checked>
+          <label for="remember" style="text-transform:none;letter-spacing:0;font-size:.875rem;color:#777;font-weight:400;margin-bottom:0;">Remember me</label>
+        </div>
+
+        <button type="submit">Log In</button>
+        <button type="button" class="cancelbtn">Cancel</button>
+      </div>
+    </form>
+
+    <div class="card-footer">
+      <span>Don't have an account? <a href="SignUP.html">Sign up free</a></span>
+      <span class="psw-link"><a href="#">Forgot password?</a></span>
+      <div class="back-link"><a href="home.html">Back to Siza</a></div>
+    </div>
+  </div>
+
+  <script src="js/java.js"></script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up Siza</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: linear-gradient(135deg, #f5efe8 0%, #e8ddd4 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 20px 60px rgba(54,26,0,.14);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: rgb(54, 26, 0);
+      padding: 32px 36px 24px;
+      text-align: center;
+      color: white;
+    }
+    .card-header img { width: 50px; margin-bottom: 10px; filter: brightness(0) invert(1); }
+    .card-header h1  { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 4px; }
+    .card-header p   { opacity: .7; font-size: .875rem; }
+
+    .card-body { padding: 28px 36px; }
+
+    label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=tel],
+    input[type=password],
+    select {
+      width: 100%;
+      padding: 11px 13px;
+      margin-bottom: 14px;
+      border: 1.5px solid #e0d8d0;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .9rem;
+      background: #fdfaf7;
+      transition: border .2s, box-shadow .2s;
+      display: block;
+    }
+    input:focus, select:focus { outline: none; border-color: rgb(4,170,109); box-shadow: 0 0 0 3px rgba(4,170,109,.1); }
+
+    .form-row { display: flex; gap: 12px; }
+    .form-row > div { flex: 1; }
+
+    hr { border: none; border-top: 1px solid #f0ede9; margin: 16px 0; }
+
+    .role-selector { display: flex; gap: 10px; margin-bottom: 14px; }
+    .role-option {
+      flex: 1;
+      position: relative;
+    }
+    .role-option input[type=radio] {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+    .role-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 10px;
+      border: 2px solid #e0d8d0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: .8rem;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #555;
+      transition: border .2s, background .2s;
+    }
+    .role-option label .icon { font-size: 1.5rem; margin-bottom: 5px; }
+    .role-option input[type=radio]:checked + label {
+      border-color: rgb(4,170,109);
+      background: rgba(4,170,109,.07);
+      color: rgb(4,170,109);
+    }
+
+    .terms { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 18px; font-size: .82rem; color: #777; line-height: 1.5; }
+    .terms input { width: auto; margin: 0; padding: 0; margin-top: 1px; flex-shrink: 0; }
+    .terms a { color: rgb(4,170,109); text-decoration: none; font-weight: 600; }
+
+    .btn-row { display: flex; gap: 10px; }
+    .cancelbtn {
+      flex: 1;
+      padding: 12px;
+      background: #f0ede9;
+      color: #555;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .9rem;
+      cursor: pointer;
+    }
+    .signupbtn {
+      flex: 2;
+      padding: 12px;
+      background: rgb(4, 170, 109);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: .95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .signupbtn:hover { background: #028a57; }
+
+    .card-footer {
+      padding: 16px 36px 24px;
+      text-align: center;
+      border-top: 1px solid #f0ede9;
+      font-size: .875rem;
+      color: #888;
+    }
+    .card-footer a  { color: rgb(4,170,109); text-decoration: none; font-weight: 600; }
+    .back-link { display: block; text-align: center; margin-top: 12px; font-size: .82rem; }
+    .back-link a { color: rgb(54,26,0); text-decoration: none; }
+
+    .pw-hint { font-size: .75rem; color: #aaa; margin-top: -10px; margin-bottom: 14px; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="card-header">
+      <img src="handshake-solid-full.svg" alt="Siza logo">
+      <h1>Join Siza</h1>
+      <p>Create your free account to buy or sell</p>
+    </div>
+
+    <form name="signup" action="php/auth.php?action=register" method="post">
+      <div class="card-body">
+
+        <label>I want to</label>
+        <div class="role-selector">
+          <div class="role-option">
+            <input type="radio" id="role-buyer" name="role" value="buyer" checked>
+            <label for="role-buyer">
+              <span class="icon"></span>
+              Buy
+            </label>
+          </div>
+          <div class="role-option">
+            <input type="radio" id="role-seller" name="role" value="seller">
+            <label for="role-seller">
+              <span class="icon"></span>
+              Sell
+            </label>
+          </div>
+        </div>
+
+        <hr>
+
+        <label for="full_name">Full Name *</label>
+        <input type="text" id="full_name" name="full_name" placeholder="e.g. Thabo Nkosi" required autocomplete="name">
+
+        <div class="form-row">
+          <div>
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+          </div>
+          <div>
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" placeholder="082 000 0000" autocomplete="tel">
+          </div>
+        </div>
+
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" placeholder="e.g. Soweto, Khayelitsha">
+
+        <hr>
+
+        <label for="psw">Password *</label>
+        <input type="password" id="psw" name="psw" placeholder="Min. 8 characters" required autocomplete="new-password">
+        <p class="pw-hint">Must be at least 8 characters.</p>
+
+        <label for="pswRepeat">Repeat Password *</label>
+        <input type="password" id="pswRepeat" name="pswRepeat" placeholder="Repeat your password" required autocomplete="new-password">
+
+        <div class="terms">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms" style="text-transform:none;letter-spacing:0;font-weight:400;font-size:.82rem;color:#777;margin-bottom:0;">
+            By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="cancelbtn">Cancel</button>
+          <button type="submit" class="signupbtn">Create Account</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="card-footer">
+      Already have an account? <a href="LogIn.html">Log in</a>
+      <div class="back-link"><a href="home.html"> Back to Siza</a></div>
+    </div>
+  </div>
+
+  <script src="js/java.js"></script>
+</body>
+</html>
